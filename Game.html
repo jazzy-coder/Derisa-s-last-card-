@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Derisa’s Last Card — Quick match</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#07050d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Last Card">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#07050d;--ink:#f6efe0;--mute:#a79fb3;--gold:#e8b84f;--gold2:#ffe29a;--ruby:#e0334d;--cyan:#38e8ff;--glass:rgba(20,14,34,.66);--line:rgba(232,184,79,.32);--cw:clamp(54px,min(17vw,10.5vh),90px);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(60% 40% at 15% 10%,rgba(192,36,58,.3),transparent 70%),radial-gradient(60% 40% at 90% 90%,rgba(56,232,255,.16),transparent 70%),var(--bg);color:var(--ink);font:600 17px Rajdhani,system-ui,sans-serif;overflow:hidden}
+#app{height:100%;max-width:560px;margin:0 auto;padding:8px 12px;display:flex;flex-direction:column;gap:8px}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+h1{margin:0;font:900 19px "Cinzel Decorative",serif;color:var(--gold2);text-shadow:0 0 14px rgba(232,184,79,.5)}
+.chip{height:36px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:700 15px Rajdhani,sans-serif;display:inline-flex;align-items:center;text-decoration:none;cursor:pointer}
+.who{display:flex;align-items:center;justify-content:center;gap:10px}
+.av{position:relative;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font:900 24px "Cinzel Decorative",serif;color:var(--gold2);background:rgba(232,184,79,.12);border:2px solid var(--line);transition:.3s}
+.av.on{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(56,232,255,.2),0 0 26px rgba(56,232,255,.55)}
+.tag{position:absolute;left:-10px;top:-4px;font-size:12px;padding:1px 7px;border-radius:9px;background:var(--cyan);color:#021;font-weight:700}
+.plus{position:absolute;right:-8px;bottom:-4px;width:24px;height:24px;border-radius:50%;border:2px solid var(--bg);background:var(--gold);color:#1a1000;font:700 17px/1 Rajdhani;cursor:pointer;padding:0}
+.nm{padding:4px 14px;border-radius:12px;border:1px solid var(--line);background:var(--glass);max-width:46vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bub{position:absolute;bottom:100%;left:50%;transform:translate(-50%,-4px) scale(0);transform-origin:bottom;background:#fff;color:#111;padding:5px 11px;border-radius:12px;font-size:15px;white-space:nowrap;transition:.25s;z-index:5}
+.bub.show{transform:translate(-50%,-4px) scale(1)}
+.felt{flex:1;min-height:0;border:2px solid var(--line);border-radius:22px;padding:10px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;background:radial-gradient(80% 70% at 50% 50%,rgba(60,30,110,.5),rgba(14,8,28,.85)),repeating-linear-gradient(60deg,rgba(232,184,79,.05) 0 1px,transparent 1px 22px);box-shadow:0 0 40px rgba(232,184,79,.14) inset,0 20px 60px rgba(0,0,0,.5)}
+.row{display:flex;justify-content:center;width:100%}
+.oh .card{--s:.62;width:calc(var(--cw)*.62);margin-left:calc(var(--cw)*-.3)}
+.oh .card:first-child,.hand .card:first-child{margin-left:0}
+.mid{display:flex;align-items:center;justify-content:center;gap:clamp(10px,4vw,24px)}
+.stack{position:relative;width:var(--cw);aspect-ratio:5/7;cursor:pointer}
+.stack .card{position:absolute;left:0;top:0}
+.stack .card:nth-child(1){translate:-4px -4px}.stack .card:nth-child(2){translate:-2px -2px}
+.stack.pulse .card:last-child{animation:pulse 1s infinite}
+@keyframes pulse{50%{filter:drop-shadow(0 0 14px var(--gold2))}}
+.cnt{position:absolute;right:-8px;bottom:-8px;min-width:26px;height:26px;border-radius:13px;background:var(--ruby);display:grid;place-items:center;font-size:14px;z-index:3}
+.disc{position:relative;width:var(--cw);aspect-ratio:5/7}
+.disc .card{position:absolute;inset:0}
+.sp{position:absolute;right:-12px;top:-10px;width:30px;height:30px;border-radius:50%;background:var(--glass);border:1px solid var(--line);display:grid;place-items:center;font-size:20px;z-index:4}
+.sp.r{color:var(--ruby)}
+.hand{display:flex;justify-content:center;width:100%;padding-top:14px}
+.hand .card{margin-left:calc(var(--cw)*var(--ov,-.1))}
+/* cards */
+.card{width:var(--cw);aspect-ratio:5/7;position:relative;perspective:800px;flex:none;rotate:var(--rot,0deg);transition:translate .25s}
+.in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,1.25,.5,1)}
+.in.down{transform:rotateY(180deg)}
+.f,.b{position:absolute;inset:0;border-radius:9%;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 6px 16px rgba(0,0,0,.55);background:#f3ead7}
+.b{transform:rotateY(180deg)}
+.b.gb{background:repeating-linear-gradient(45deg,#8a1a2c 0 6px,#5c0f1d 6px 12px);border:3px solid #f3ead7}
+img{width:100%;height:100%;object-fit:cover;display:block;-webkit-user-drag:none}
+.gen{height:100%;color:#111;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:6% 8%;font-family:"Cinzel Decorative",serif}
+.gen.r{color:#c0243a}
+.gen b{align-self:flex-start;font-size:calc(var(--cw)*.24);line-height:.95;display:flex;flex-direction:column;align-items:center}
+.gen b.x{align-self:flex-end;transform:rotate(180deg)}.gen i{font-style:normal}
+.gen span{font-size:calc(var(--cw)*.6);line-height:1}
+.land{animation:fly .7s cubic-bezier(.2,.9,.3,1) both}
+.land .in{animation:flipin .7s ease both}
+@keyframes fly{from{transform:translate(var(--fx,0),var(--fy,200px)) rotate(-25deg) scale(.8)}}
+@keyframes flipin{from{transform:rotateY(180deg)}}
+.hand .card.ok{translate:0 -12px;cursor:pointer}
+.hand .card.ok .f{box-shadow:0 0 0 2px var(--gold2),0 0 18px rgba(232,184,79,.7)}
+.hand .card.no .f{filter:brightness(.62)}
+.hand .card.shake{animation:sh .3s}
+@keyframes sh{25%{translate:-5px 0}75%{translate:5px 0}}
+#msg{margin:0;text-align:center;min-height:24px;color:var(--gold2);font-size:17px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:4px}
+.fab{width:56px;height:56px;border-radius:50%;border:1px solid var(--line);background:var(--glass);color:var(--ink);display:grid;place-items:center;cursor:pointer;position:relative}
+.fab svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.last{width:78px;height:78px;border-radius:50%;border:3px double var(--gold2);background:radial-gradient(circle,#7a1426,#3a0a16);color:var(--gold2);font:900 14px/1.1 "Cinzel Decorative",serif;cursor:pointer;box-shadow:0 0 22px rgba(224,51,77,.5);padding:6px}
+.last.hot{animation:hot .7s infinite;box-shadow:0 0 34px var(--gold2)}
+@keyframes hot{50%{transform:scale(1.14)}}
+.qc{position:absolute;bottom:64px;left:0;display:none;flex-direction:column;gap:6px;z-index:9}
+.qc.show{display:flex}
+.qc button{white-space:nowrap}
+[hidden]{display:none!important}
+.judge{position:fixed;inset:0;z-index:50;overflow-y:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px));background:radial-gradient(60% 40% at 50% 6%,rgba(232,184,79,.28),transparent 70%),radial-gradient(60% 40% at 15% 92%,rgba(192,36,58,.25),transparent 70%),#07050d}
+.jfx{position:fixed;inset:0;pointer-events:none}
+.judge[data-w=rain] .jfx{background:repeating-linear-gradient(105deg,transparent 0 14px,rgba(130,200,255,.35) 14px 15px);background-size:60px 80px;animation:rainf .5s linear infinite}
+@keyframes rainf{to{background-position:-12px 80px}}
+.judge[data-w=snow] .jfx{background:radial-gradient(circle,rgba(255,255,255,.8) 0 2px,transparent 3px) 0 0/48px 48px,radial-gradient(circle,rgba(255,255,255,.6) 0 1.5px,transparent 2.5px) 20px 20px/70px 70px;animation:snowf 6s linear infinite}
+@keyframes snowf{to{background-position:0 400px,20px 420px}}
+.judge[data-w=cloud] .jfx,.judge[data-w=part] .jfx{background:radial-gradient(40% 12% at 30% 12%,rgba(170,160,200,.22),transparent 70%),radial-gradient(45% 14% at 75% 22%,rgba(170,160,200,.18),transparent 70%)}
+.judge[data-w=sun] .jfx{background:radial-gradient(60% 40% at 90% 0,rgba(255,214,110,.35),transparent 70%)}
+.jwrap{position:relative;max-width:520px;margin:0 auto}
+.jtop{display:flex;justify-content:space-between;align-items:center}
+.jwx{display:flex;gap:4px;padding:4px;border-radius:14px;background:var(--glass);border:1px solid var(--line)}
+.jwx button{width:36px;height:36px;border:0;border-radius:10px;background:transparent;color:var(--mute);cursor:pointer;font-size:18px}
+.jwx button[aria-pressed=true]{background:linear-gradient(100deg,var(--gold2),var(--gold));color:#1a1000}
+.jtitle{margin:14px 0 0;text-align:center;font:900 clamp(30px,9vw,44px) "Cinzel Decorative",serif;background:linear-gradient(180deg,var(--gold2),var(--gold) 60%,#a9711f);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.08em}
+.jimg{width:min(210px,54vw);aspect-ratio:2/3;margin:12px auto;border-radius:18px;overflow:hidden;border:2px solid var(--gold);box-shadow:0 0 44px rgba(232,184,79,.55);animation:jglow 3s ease-in-out infinite}
+@keyframes jglow{50%{box-shadow:0 0 70px rgba(232,184,79,.85)}}
+.jname{width:fit-content;max-width:100%;margin:0 auto;padding:6px 22px;border-radius:16px;border:1px solid var(--gold);background:var(--glass);font:700 22px Rajdhani,sans-serif;text-align:center;overflow-wrap:anywhere}
+.jh{margin:22px 0 10px;font:700 18px Rajdhani,sans-serif;letter-spacing:.14em;text-decoration:underline;text-underline-offset:6px}
+.jcols{display:grid;grid-template-columns:1fr 1fr}.jcols section{min-width:0;padding:0 10px 0 0}.jcols section+section{border-left:1px solid var(--line);padding:0 0 0 12px}
+.jpill{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 10px;border-radius:14px;border:1px solid var(--line);background:var(--glass);font-weight:700;margin-bottom:6px}
+.jpill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jplus{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--gold);background:transparent;color:var(--gold2);font:700 20px/1 Rajdhani;cursor:pointer;padding:0}
+.jrx{min-height:34px;display:flex;flex-wrap:wrap;gap:2px}.jrx i{font-style:normal;font-size:24px;animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(0) translateY(14px)}}
+.jcols p{margin:6px 0}.jcols b{color:var(--gold2)}
+.jr{display:flex;align-items:center;gap:8px;margin:6px 0}
+.jt{--cw:40px;display:block;width:40px;height:56px;position:relative;flex:none}
+.jdp{margin-top:14px!important;font-weight:700;font-size:18px;color:var(--ink)}.jdp b{font-size:22px;color:var(--ruby)}
+.etray{position:fixed;z-index:60;display:flex;gap:4px;padding:6px;border-radius:14px;background:#150f24;border:1px solid var(--gold);box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.etray button{width:38px;height:38px;border:0;border-radius:10px;background:transparent;font-size:24px;cursor:pointer}.etray button:hover{background:rgba(255,255,255,.1)}
+.slot{position:relative;display:grid;justify-items:center;gap:4px}.slot small{font-size:12px;color:var(--mute);line-height:1}
+.disc:empty{border:1px dashed var(--line);border-radius:9%}
+.addslot{display:grid;align-content:center;justify-items:center;border:2px dashed var(--line);border-radius:9%;color:var(--gold2);font:700 22px/1 Rajdhani,sans-serif}
+.addslot small{font-size:11px;color:var(--mute)}.addslot.hot{border-color:var(--gold2);box-shadow:0 0 14px var(--gold2)}
+.hand .addslot{margin-left:calc(var(--cw)*.15);cursor:pointer}.oh .addslot{margin-right:calc(var(--cw)*.2)}
+.cb{display:none;max-width:34vw;min-width:56px;padding:6px 12px;border-radius:16px 16px 16px 4px;border:1px solid var(--line);background:var(--glass);font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;color:var(--ink)}
+body:not(.pvp) .slot:last-child{display:none}body:not(.pvp) .slot small{display:none}body:not(.pvp) .mid{gap:clamp(18px,9vw,46px)}body:not(.net) #qi{display:none}
+body.net .cb{display:block}body.net .bub{display:none}body.net #chat{display:none}body.net #pcb{cursor:pointer}
+body.learning{--cw:clamp(46px,min(14vw,8.2vh),72px)}
+.coach{border:1px solid var(--cyan);border-radius:14px;background:rgba(56,232,255,.08);padding:8px 10px;font-size:15px;line-height:1.25}
+.crow{display:flex;gap:6px;margin-top:6px}.crow .chip{height:30px;padding:0 10px;font-size:14px}
+.card.hint .f{box-shadow:0 0 0 3px var(--cyan),0 0 22px var(--cyan)}.card.hint{animation:hintb 1s infinite}
+@keyframes hintb{50%{translate:0 -22px}}
+#ogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ob{display:grid;justify-items:center;gap:3px;padding:10px 4px;border-radius:16px;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:700 15px Rajdhani,sans-serif;cursor:pointer}
+.ob img{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--line)}
+.ob small{color:var(--gold2);font-size:13px}
+.ob:hover{border-color:var(--gold);box-shadow:0 0 18px rgba(232,184,79,.35)}
+#od{width:min(430px,calc(100% - 24px))}
+#act{margin:0 auto;background:linear-gradient(100deg,var(--gold2),var(--gold));color:#1a1000;border:0}
+button:focus-visible,a:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+dialog{border:1px solid var(--gold);border-radius:22px;background:#10091c;color:var(--ink);width:min(380px,calc(100% - 28px));padding:22px;text-align:center}
+dialog::backdrop{background:rgba(5,3,10,.75);backdrop-filter:blur(5px)}
+dialog h2{margin:0 0 14px;font:900 22px "Cinzel Decorative",serif;color:var(--gold2)}
+.suits{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.suits button,.btn{height:56px;border-radius:14px;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:700 30px Rajdhani;cursor:pointer}
+.btn{font-size:18px;height:48px;padding:0 20px;text-decoration:none;display:inline-grid;place-items:center}
+.btn.go{background:linear-gradient(100deg,var(--gold2),var(--gold));color:#1a1000;border:0}
+.red{color:var(--ruby)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header><button class="chip" id="qb" type="button">‹ Leave</button><h1 id="ttl">Quick match</h1><span class="chip" id="turnT">…</span></header>
+  <div class="who"><div class="cb" id="acb">…</div><div class="av" id="aav"><img id="aimg" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span class="tag">AI</span><button class="plus" data-f="Derisa Bot" aria-label="Add Derisa Bot as friend">+</button><span class="bub" id="abub"></span></div><div class="nm" id="aname">Derisa Bot</div></div>
+  <section class="felt" aria-label="Card table">
+    <div class="row oh" id="oh"></div>
+    <div class="mid">
+      <div class="slot"><div class="stack" id="draw" role="button" tabindex="0" aria-label="Draw pile"></div><small>Pick card</small></div>
+      <div class="slot"><div class="disc" id="disc" aria-live="polite"></div><span class="sp" id="sp"></span><small>Played</small></div>
+      <div class="slot"><div class="disc" id="prev"></div><small>Last played</small></div>
+    </div>
+    <div class="hand" id="hand"></div>
+  </section>
+  <p id="msg" role="status"></p>
+  <button class="chip" id="act" type="button" hidden></button>
+  <div class="coach" id="coach" hidden><div id="ctext"></div><div class="crow"><button class="chip" id="cguide" type="button">Guide</button><button class="chip" id="chint" type="button">Hint</button><button class="chip" id="cskill" type="button"></button><button class="chip" id="clang" type="button">SW</button></div></div>
+  <div class="bar">
+    <div style="position:relative"><button class="fab" id="chat" aria-label="Quick chat"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.5 7.2L3 21l1.8-5.5A8 8 0 1121 12z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></button>
+      <div class="qc" id="qc"><input id="qi" maxlength="60" placeholder="Type a message" aria-label="Chat message" style="height:36px;border-radius:12px;border:1px solid var(--line);background:rgba(8,5,16,.85);color:var(--ink);padding:0 10px;font:600 16px Rajdhani,sans-serif"><button class="chip" data-q="Nice move!">Nice move!</button><button class="chip" data-q="Good luck!">Good luck!</button><button class="chip" data-q="Too slow 😎">Too slow 😎</button><button class="chip" data-q="Oops…">Oops…</button></div></div>
+    <div class="who"><div class="cb" id="pcb">…</div><div class="av" id="pav">Y<button class="plus" data-f="yourself" aria-label="Add friends">+</button><span class="bub" id="pbub"></span></div><div class="nm" id="pname">You</div></div>
+    <button class="last" id="last" type="button">Last card</button>
+  </div>
+</div>
+<dialog id="sd"><h2>Pick the suit your opponent must play</h2><div class="suits"><button data-s="S">♠</button><button data-s="H" class="red">♥</button><button data-s="D" class="red">♦</button><button data-s="C">♣</button></div></dialog>
+<dialog id="bd"><h2>Play together</h2><p style="color:var(--mute);margin:0 0 12px">Tap cards in the order you want them placed. The last one stays on top.</p><div class="suits" id="bsel"></div><div style="display:flex;gap:10px;margin-top:14px"><button class="btn" id="bcancel" type="button" style="flex:1">Cancel</button><button class="btn go" id="bplay" type="button" style="flex:1">Play</button></div></dialog>
+<dialog id="qd"><h2>Quit match?</h2><p style="color:var(--mute);margin:0 0 14px">You will forfeit this match.</p><div style="display:flex;gap:10px"><button class="btn" id="qno" type="button" style="flex:1">Stay</button><button class="btn go" id="qyes" type="button" style="flex:1">Quit</button></div></dialog>
+<dialog id="cd"><h2 id="ct"></h2><p id="cb" style="line-height:1.4;margin:0 0 16px;text-align:left;color:var(--ink)"></p><div style="display:flex;gap:10px"><button class="btn" id="cl" type="button" style="flex:0 0 76px">SW/EN</button><button class="btn go" id="cn" type="button" style="flex:1"></button></div></dialog>
+<dialog id="kd"><h2>Skills</h2><div id="kl"></div><form method="dialog" style="margin-top:12px"><button class="btn go">OK</button></form></dialog>
+<dialog id="gd"><h2>Hongera! Well done!</h2><p style="line-height:1.4;color:var(--ink)">Umejifunza kila kitu, uko tayari kwa mechi halisi. You have learned every skill and are ready for real matches.</p><form method="dialog"><button class="btn go">Continue</button></form></dialog>
+<dialog id="ed"><h2 id="et"></h2><p id="ep" style="color:var(--mute);margin:0 0 16px"></p><button class="btn go" id="again">Play again</button> <button class="btn" id="chg" type="button">Change opponent</button> <a class="btn" href="Home.html">Home</a></dialog>
+<dialog id="od"><h2>Choose your opponent</h2><div id="ogrid"></div><label style="display:flex;gap:8px;align-items:center;justify-content:center;margin-top:14px;color:var(--ink)"><input type="checkbox" id="coachchk"> Teach me as I play · Nifundishe</label></dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script>
+const MODE='ai';
+const $=s=>document.querySelector(s);
+const SU={S:'♠',H:'♥',D:'♦',C:'♣',X:'★'},SN={S:'spades',H:'hearts',D:'diamonds',C:'clubs',X:'joker'},RK=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+/* CARD IMAGES: images/cards/<rank><suit>.jpg e.g. 7S.jpg, 10H.jpg, KD.jpg, JOKER.jpg, back.jpg. EMBED holds copies so this preview works alone. */
+const CARD_PATH=DLC.CARD_BASE;
+const EMBED={};
+let P={name:'You'};try{Object.assign(P,JSON.parse(sessionStorage.getItem('dlc_player')||'{}'))}catch(e){}
+$('#pname').textContent=P.name;$('#pav').firstChild.textContent=(P.name[0]||'Y').toUpperCase();
+let deck,disc,H,turn,pen,penKind,force,free,pend,over,needCall,lock,callT,goFn;const seen=new Set();
+const red=s=>s==='H'||s==='D',ik=c=>c.r==='JK'?'JOKER':c.r+c.s,topCard=()=>disc[disc.length-1],lab=c=>c.r==='JK'?'Joker':c.r+SU[c.s];
+const other=w=>w==='p'?'a':'p',nm=w=>w==='p'?'You':(Net.match?Net.oppName:'Bot');
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const msg=t=>$('#msg').textContent=t;
+function act(t,f){const a=$('#act');a.textContent=t;a.hidden=false;a.onclick=()=>{a.hidden=true;f()}}
+const hideAct=()=>{$('#act').hidden=true};
+function say(w,t){const cb=$(w==='p'?'#pcb':'#acb');cb.textContent=t;clearTimeout(cb._t);cb._t=setTimeout(()=>{cb.textContent='…'},6000);const b=$(w==='p'?'#pbub':'#abub');b.textContent=t;b.classList.add('show');clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('show'),2200)}
+function gen(c){if(c.r==='JK')return '<div class="gen r"><span>★</span></div>';return `<div class="gen ${red(c.s)?'r':''}"><b>${c.r}<i>${SU[c.s]}</i></b><span>${SU[c.s]}</span><b class="x">${c.r}<i>${SU[c.s]}</i></b></div>`}
+function el(c,down,cls){const d=document.createElement('div');d.className='card '+(cls||'');
+ const bk=EMBED.back||CARD_PATH+'back.jpg';
+ d.innerHTML=`<div class="in${down?' down':''}">${c?'<div class="f"><img alt="'+(c.r==='JK'?'Joker':c.r+' of '+SN[c.s])+'" src="'+(EMBED[ik(c)]||CARD_PATH+ik(c)+'.jpg')+'"></div>':'<div class="f"></div>'}<div class="b"><img alt="Card back" src="${bk}"></div></div>`;
+ if(c)d.querySelector('.f img').onerror=e=>{e.target.parentNode.innerHTML=gen(c)};
+ d.querySelector('.b img').onerror=e=>{const b=e.target.parentNode;b.classList.add('gb');e.target.remove()};
+ return d}
+/* RULES: match suit or number; J and Joker playable any time; 2/Joker stack penalties; 7 freeze; 8 repeat; J forces a suit */
+function canPlay(c){
+ const mh=H[turn];if(mh&&mh.length===1&&mh[0]===c&&SPEC.includes(c.r))return false;
+ if(pend)return c.r===pend.rank;
+ if(pen>0)return penKind==='JK'?c.r==='JK':(c.r==='2'||c.r==='JK');
+ if(free||c.r==='J'||c.r==='JK')return true;
+ if(force)return c.s===force;
+ const t=topCard();return c.s===t.s||c.r===t.r}
+const jackFree=rem=>rem.length<=1||rem.every(x=>x.r===rem[0].r);
+const SPEC=['2','7','8','J','JK'];
+const identHand=h=>h.length>=2&&!SPEC.includes(h[0].r)&&h.every(x=>x.r===h[0].r);
+const bulkOK=c=>!SPEC.includes(c.r)&&H.p.some(x=>x!==c&&x.r===c.r);
+function bulkDialog(c){const sib=H.p.filter(x=>x.r===c.r),d=$('#bd'),box=$('#bsel');let sel=[c];
+ const rd=()=>{box.innerHTML='';sib.forEach(x=>{const b=document.createElement('button'),i=sel.indexOf(x);
+  b.textContent=x.r+SU[x.s]+(i>=0?' ·'+(i+1):'');b.style.fontSize='20px';if(red(x.s))b.className='red';b.style.opacity=i>=0?1:.6;
+  b.onclick=()=>{if(x===c)return;if(i>=0)sel.splice(i,1);else sel.push(x);rd()};box.appendChild(b)})};
+ rd();$('#bplay').onclick=()=>{d.close();const [f,...m]=sel;play('p',f,null,m)};$('#bcancel').onclick=()=>d.close();d.showModal()}
+function lastReq(){const n=H.p.length,f=H.p.find(canPlay),m=H.p.filter(x=>x!==f);say('p',n+' Last!');play('p',f,null,m)}
+function newGame(){gameT0=Date.now();deck=[];for(const s of['S','H','D','C'])for(const r of RK)deck.push({r,s,id:r+s});
+ deck.push({r:'JK',s:'X',id:'JK1'},{r:'JK',s:'X',id:'JK2'});shuffle(deck);H={p:[],a:[]};
+ for(let i=0;i<4;i++){H.p.push(deck.pop());H.a.push(deck.pop())}
+ let t;do{t=deck.pop();if(['2','7','8','J','JK'].includes(t.r)){deck.unshift(t);t=null}}while(!t);
+ disc=[t];pen=0;penKind=null;force=null;free=false;pend=null;turn='p';over=false;needCall=false;lock=true;seen.clear();hideAct();for(const s in lack)lack[s]=0;
+ renderPile('d');renderHand();renderOpp();hud();msg('Dealing 4 cards each…');
+ setTimeout(()=>begin(),1500);if(COACH)intro()}
+function renderPile(a,k){const d=$('#disc');d.innerHTML='';
+ const K=k||1;disc.slice(-Math.max(3,K)).forEach((c,i,arr)=>{const t=i>=arr.length-K,e=el(c,false,t&&a?'land':'');if(t&&a){const dl=(i-(arr.length-K))*.22+'s';e.style.animationDelay=dl;e.querySelector('.in').style.animationDelay=dl}
+  e.style.setProperty('--rot',((c.id.charCodeAt(0)*7+c.id.charCodeAt(c.id.length-1))%28-14)+'deg');
+  if(t&&a){e.style.setProperty('--fy',a==='p'?'240px':a==='a'?'-240px':'0px');e.style.setProperty('--fx',a==='d'?'-120px':'0px')}
+  d.appendChild(e)});const pv=$('#prev');pv.innerHTML='';if(disc.length>1)pv.appendChild(el(disc[disc.length-2],false,''))}
+function renderHand(){const h=$('#hand');h.innerHTML='';const n=H.p.length+(MODE==='pvp'?1:0);h.style.setProperty('--ov',n<=5?-.08:Math.max(-.62,-.08-(n-5)*.06));
+ H.p.forEach((c,i)=>{const fresh=!seen.has(c.id);seen.add(c.id);
+  const ok=turn==='p'&&!lock&&!over&&canPlay(c),e=el(c,fresh,ok?'ok':turn==='p'&&!lock?'no':'');
+  if(fresh){const x=e.querySelector('.in');x.style.transitionDelay=(i*90)+'ms';requestAnimationFrame(()=>requestAnimationFrame(()=>x.classList.remove('down')))}
+  if(hintId===c.id)e.classList.add('hint');
+  e.onclick=()=>{if(!ok){e.classList.add('shake');if(COACH&&turn==='p'&&!lock)explainNo(c);setTimeout(()=>e.classList.remove('shake'),300);return}
+   if(c.r==='J'&&!pend){const rem=H.p.filter(x=>x!==c);
+    if(!rem.length||jackFree(rem))return play('p',c,null);
+    const d=$('#sd');d.showModal();d.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{d.close();play('p',c,b.dataset.s)})}
+   else if(!pend&&pen===0&&bulkOK(c))bulkDialog(c);else play('p',c)};
+  h.appendChild(e)});if(MODE==='pvp'){const ps=document.createElement('div');ps.className='card addslot'+(turn==='p'&&!lock&&!over&&!pend&&pen===0&&!H.p.some(canPlay)?' hot':'');ps.innerHTML='<span>+</span>';ps.setAttribute('role','button');ps.setAttribute('aria-label','Pick a card');ps.onclick=()=>$('#draw').click();h.appendChild(ps)}}
+function renderOpp(){const o=$('#oh');o.innerHTML='';if(MODE==='pvp'){const s=document.createElement('div');s.className='card addslot'+(oppAdd?' hot':'');s.innerHTML='<span>+'+(oppAdd||'')+'</span><small>add</small>';o.appendChild(s)}H.a.forEach(()=>o.appendChild(el(null,true)))}
+function hud(){const s=$('#draw');s.innerHTML='';for(let i=0;i<3;i++)s.appendChild(el(null,true));
+ s.insertAdjacentHTML('beforeend','<span class="cnt">'+deck.length+'</span>');
+ s.classList.toggle('pulse',turn==='p'&&!lock&&!over&&!pend&&pen===0&&!H.p.some(canPlay));
+ const sp=$('#sp'),sy=force||(free||!disc.length?'X':topCard().s);
+ sp.textContent=pen>0?'+'+pen:SU[sy];sp.style.fontSize=pen>0?'14px':'20px';sp.className='sp'+(red(sy)&&!pen?' r':'');
+ $('#aav').classList.toggle('on',turn==='a'&&!over);$('#pav').classList.toggle('on',turn==='p'&&!over);
+ $('#turnT').textContent=over?'Game over':turn==='p'?'Your turn':(Net.match?Net.oppName+' playing…':'Bot thinking…');
+ const lr=turn==='p'&&!lock&&!over&&!pend&&pen===0&&identHand(H.p)&&H.p.some(canPlay);$('#last').textContent=lr?H.p.length+' Last':'Last card';$('#last').classList.toggle('hot',!!needCall||lr)}
+function refill(){if(disc.length<2)return;const t=disc.pop();deck=shuffle(disc);disc=[t];renderPile(null)}
+function draw(w,n){if(w==='a'&&n>0){oppAdd=n;clearTimeout(addT);addT=setTimeout(()=>{oppAdd=0;renderOpp()},1800)}for(let i=0;i<n;i++){if(!deck.length)refill();if(!deck.length)break;H[w].push(deck.pop())}w==='p'?renderHand():renderOpp();hud()}
+function play(w,c,ns,more){more=more||[];const wasPen=pen>0,wasPend=!!pend;if(w==='p')skillHook(c,more,wasPen||wasPend);hintId=null;if(w==='a'&&LES[c.r]){lastLesson=LES[c.r];if(COACH)coachSet(T(LES[c.r][0],LES[c.r][1]))}lock=true;hideAct();H[w]=H[w].filter(x=>x!==c&&!more.includes(x));seen.delete(c.id);more.forEach(x=>seen.delete(x.id));disc.push(c,...more);if(w==='p'&&c.s in lack)lack[c.s]=0;const L=more.length?more[more.length-1]:c;
+ pend=null;force=null;free=false;
+ if(c.r==='JK'){pen+=5;penKind='JK';free=true}
+ else if(c.r==='2'){pen+=2;if(penKind!=='JK')penKind='2'}
+ else if(c.r==='J'){if(ns)force=ns;else free=true}
+ renderPile(w,1+more.length);renderHand();renderOpp();hud();sync();
+ if(!H[w].length)return finish(w);
+ let m=nm(w)+' played '+lab(c)+(more.length?' + '+more.map(lab).join(' + '):'');
+ if(c.r==='JK'||c.r==='2')m+=' · pick '+pen+' pending';
+ else if(c.r==='7')m+=' · freeze!';else if(c.r==='8')m+=' · repeat!';
+ else if(c.r==='J')m+=force?' · '+nm(other(w))+(w==='p'?' must':' must')+' play '+SU[force]:' · any card allowed';
+ msg(m);
+ goFn=()=>after(w,L);
+ if(H[w].length===1){
+  if(w==='p'){needCall=true;hud();msg('One card left. Press Last card before your next turn!')}
+  else say('a','Last card!')}
+ setTimeout(goFn,900)}
+function after(w,c){if(over)return;const o=other(w);
+ if(pen>0){turn=o;return begin()}
+ if(c.r==='7'||c.r==='8'){
+  if(H[o].some(x=>x.r===c.r)){pend={rank:c.r,by:w};turn=o;return begin()}
+  turn=w;msg(nm(w)+' plays again.');return begin()}
+ turn=o;begin()}
+function resolvePend(){const w=pend.by;pend=null;hideAct();turn=w;msg(nm(w)+' plays again.');setTimeout(begin,800)}
+function takePen(w){const n=pen;hideAct();lock=true;draw(w,n);pen=0;penKind=null;turn=other(w);
+ msg(nm(w)+(w==='p'?' pick ':' picks ')+n+' cards. '+nm(turn)+' plays again.');setTimeout(begin,1300)}
+function begin(ns){if(over)return;lock=false;hud();
+ if(Net.match){if(ns!==true)sync();if(turn==='a'){msg('Waiting for '+Net.oppName+'…');return}return playerTurn()}
+ if(turn==='a')setTimeout(aiMove,900+Math.random()*600);else playerTurn()}
+function playerTurn(){lock=false;let pre='';
+ if(needCall){needCall=false;if(H.p.length===1&&!pend){draw('p',2);pre='You forgot to call Last card, so you pick 2. '}}
+ renderHand();hud();coachRefresh();if(pre)setTimeout(()=>msg(pre+$('#msg').textContent),0);const pl=H.p.some(canPlay);
+ if(pend){if(!pl)return resolvePend();
+  msg('Bot played '+pend.rank+(pend.rank==='7'?' to freeze you':' to repeat')+'. Counter with your '+pend.rank+' or accept.');
+  return act(pend.rank==='7'?'Accept freeze':'Let it go',resolvePend)}
+ if(pen>0){if(!pl){msg('No counter. You pick '+pen+'.');lock=true;return setTimeout(()=>takePen('p'),1200)}
+  msg('Counter with '+(penKind==='JK'?'a Joker':'a 2 or Joker')+', or pick '+pen+'.');return act('Pick '+pen,()=>takePen('p'))}
+ if(!pl)return msg(H.p.length===1&&SPEC.includes(H.p[0].r)?'A special card cannot finish the game. Tap the pile to pick a card.':'No playable card. Tap the draw pile.');
+ const t=topCard();msg(free?'Your turn. Play any card.':force?'Your turn. Play '+SU[force]+' (or J / Joker).':'Your turn. Match '+SU[t.s]+' or '+t.r+', J / Joker, or tap the pile to pick 1.')}
+$('#draw').onclick=()=>{if(turn!=='p'||lock||over)return;
+ if(pend)return $('#act').click();
+ if(pen>0)return takePen('p');
+ const vol=H.p.some(canPlay);if(!vol&&!free)lack[force||topCard().s]++;
+ lock=true;draw('p',1);learn('draw');msg(vol?'You picked a card by choice. Turn passes.':'No playable card. You drew 1. Turn passes.');setTimeout(()=>{turn='a';begin()},1100)};
+$('#draw').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#draw').click()}};
+$('#last').onclick=()=>{if(needCall){needCall=false;clearTimeout(callT);say('p','Last card!');hud();msg('Last card called!')}
+ else if(turn==='p'&&!lock&&!over&&!pend&&pen===0&&identHand(H.p)){if(H.p.some(canPlay))lastReq();else msg('None of these cards matches the pile.')}
+ else msg(H.p.length===1?'Already called.':'Last card works with one card left, or 2–4 identical cards.')};
+// AI: rule-based strategy, tuned per level (rnd = chance of a random move, bulk = chance to play identical cards together, miss = chance to forget a counter)
+const BOTS=[
+ {id:'easy',name:'Pinky',lv:'Easy',img:DLC.ASSET_BASE+'bots/easy.jpg',rnd:.7,bulk:.3,miss:.6,blunder:.25,plan:0,pull:0,count:0},
+ {id:'medium',name:'Bruno',lv:'Medium',img:DLC.ASSET_BASE+'bots/medium.jpg',rnd:.4,bulk:.6,miss:.3,blunder:.08,plan:1,pull:0,count:0},
+ {id:'hard',name:'Rio',lv:'Hard',img:DLC.ASSET_BASE+'bots/hard.jpg',rnd:.2,bulk:.85,miss:.12,blunder:0,plan:1,pull:1,count:0},
+ {id:'expert',name:'Zuri',lv:'Expert',img:DLC.ASSET_BASE+'bots/expert.jpg',rnd:.08,bulk:1,miss:.03,blunder:0,plan:1,pull:1,count:1},
+ {id:'master',name:'Shaun',lv:'Master',img:DLC.ASSET_BASE+'bots/master.jpg',rnd:.03,bulk:1,miss:0,blunder:0,plan:1,pull:1,count:1},
+ {id:'gm',name:'Fenrir',lv:'Grand Master',img:DLC.ASSET_BASE+'bots/gm.jpg',rnd:0,bulk:1,miss:0,blunder:0,plan:1,pull:1,count:1}];
+let B=BOTS[1];const lack={S:0,H:0,D:0,C:0};
+function setBot(b){B=b;for(const s in lack)lack[s]=0;$('#aimg').src=b.img;$('#aname').textContent=b.name;$('#aav .tag').textContent=b.lv;$('#aav .plus').dataset.f=b.name}
+function score(c){const n=H.a.length;let s=Math.random();
+ if(B.plan){const rem=H.a.filter(x=>x!==c&&(SPEC.includes(c.r)||x.r!==c.r));if(rem.length&&rem.every(x=>SPEC.includes(x.r)))s-=6}
+ if(c.r==='2')s+=3+(H.p.length<=3?3:0);
+ if(c.r==='7'||c.r==='8')s+=2.5;
+ if(c.r==='JK')s+=(pen>0||H.p.length<=3||n<=2)?3.5:-2;
+ if(c.r==='J')s+=n<=2?0:-3;
+ return s+H.a.filter(x=>x.s===c.s).length*.4+(B.plan?H.a.filter(x=>x!==c&&x.r===c.r).length*.3:0)}
+const pick=pl=>Math.random()<B.rnd?pl[Math.random()*pl.length|0]:pl.slice().sort((x,y)=>score(y)-score(x))[0];
+function aiMove(){if(over)return;
+ if(pend){const c=H.a.find(x=>x.r===pend.rank&&canPlay(x));if(c&&Math.random()>=B.miss){msg('Bot counters with '+lab(c)+'.');return setTimeout(()=>aiPlay(c),800)}return resolvePend()}
+ const pl=H.a.filter(canPlay);
+ if(pen>0){if(!pl.length||Math.random()<B.miss){msg(pl.length?'Bot misses the counter.':'Bot cannot counter.');return takePen('a')}return aiPlay(pick(pl))}
+ if(!pl.length){draw('a',1);msg('Bot has no playable card and draws 1.');return setTimeout(()=>{turn='p';begin()},1100)}
+ if(identHand(H.a)&&Math.random()<(B.bulk>.5?1:.5))return aiPlay(pl[0]);
+ if(B.blunder&&Math.random()<B.blunder){draw('a',1);msg('Bot picks a card.');return setTimeout(()=>{turn='p';begin()},1100)}
+ if(B.pull&&pl.every(x=>x.r==='J'||x.r==='JK')&&H.a.length>2&&Math.random()<.4){draw('a',1);msg('Bot picks a card by choice.');return setTimeout(()=>{turn='p';begin()},1100)}
+ aiPlay(pick(pl))}
+function aiPlay(c){let ns=null;
+ if(c.r==='J'&&!pend){const rem=H.a.filter(x=>x!==c);
+  if(rem.length&&!jackFree(rem)){
+   if(B.id==='easy')ns='SHDC'[Math.random()*4|0];
+   else{const cnt={S:0,H:0,D:0,C:0};rem.concat(disc).forEach(x=>{if(x.s in cnt)cnt[x.s]++});
+    if(B.count)for(const s in cnt)cnt[s]+=lack[s]*3;
+    ns=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]+(Math.random()-.5))[0]}}}
+ let more=[];
+ if(!pend&&pen===0&&!SPEC.includes(c.r)&&Math.random()<B.bulk){more=H.a.filter(x=>x!==c&&x.r===c.r);const cnt={S:0,H:0,D:0,C:0};H.a.forEach(x=>{if(x.s in cnt&&x!==c&&!more.includes(x))cnt[x.s]++});more.sort((a,b)=>cnt[a.s]-cnt[b.s])}
+ if(more.length&&H.a.length===more.length+1)say('a',(more.length+1)+' Last!');
+ play('a',c,ns,more)}
+function pickBot(first){const d=$('#od'),g=$('#ogrid');g.innerHTML='';$('#coachchk').checked=COACH;
+ BOTS.forEach(b=>{const k=document.createElement('button');k.className='ob';k.type='button';
+  k.innerHTML='<img alt="" src="'+b.img+'"><b>'+b.name+'</b><small>'+b.lv+'</small>';
+  k.onclick=()=>{d.close();setBot(b);COACH=$('#coachchk').checked;applyCoach();newGame()};g.appendChild(k)});
+ d.oncancel=e=>{if(first)e.preventDefault()};d.showModal()}
+function finish(w,remote){over=true;winnerLocal=w;if(w==='p')learn('win');lock=true;pend=null;clearTimeout(callT);needCall=false;hideAct();hud();if(!remote)sync();
+ $('#et').textContent=w==='p'?'You win!':nm('a')+' wins';$('#ep').textContent=w==='p'?'You played your last card.':'Better luck next round.';if(!Net.match)recordAi(w);
+ setTimeout(()=>Net.match?showJudge(w):$('#ed').showModal(),900)}
+$('#again').onclick=()=>{$('#ed').close();Net.match?rematch():newGame()};
+$('#chg').onclick=()=>{$('#ed').close();pickBot(false)};
+$('#chat').onclick=()=>$('#qc').classList.toggle('show');
+function sendChat(x){$('#qc').classList.remove('show');say('p',x);if(Net.match){chatSend(x);return}
+ setTimeout(()=>say('a',['Good game!','Hmm…','Bring it on.','Nice.'][Math.random()*4|0]),1200)}
+document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>sendChat(b.dataset.q));
+$('#qi').onkeydown=e=>{if(e.key==='Enter'&&e.target.value.trim()){sendChat(e.target.value.trim());e.target.value=''}};
+$('#pcb').onclick=()=>{if(document.body.classList.contains('net'))$('#qc').classList.toggle('show')};
+$('#qb').onclick=()=>Net.match?$('#qd').showModal():goHome();$('#qno').onclick=()=>$('#qd').close();$('#qyes').onclick=quitMatch;
+document.querySelectorAll('.plus').forEach(b=>b.onclick=()=>msg(b.dataset.f==='yourself'?'Friends list arrives with accounts.':'Friend request sent to '+b.dataset.f+'.'));
+/* COACH MODE: Swahili/English teaching assistant. Start with Game#learn or Game#learn-<bot id>, or tick "Teach me" when choosing an opponent. */
+let COACH=false,LANG='sw',hintId=null,lastLesson=null,introSeen=false;
+const T=(sw,en)=>LANG==='sw'?sw:en;
+const SK=[['play','Cheza card yenye suit au namba sawa','Play a card matching suit or number'],['draw','Chukua card kwenye deck','Pick a card from the deck'],['7','Tumia 7 kufreeze','Freeze with a 7'],['8','Tumia 8 kucheza tena','Repeat with an 8'],['2','Mpe adhabu kwa 2 au Joker','Make Bot pick with a 2 or Joker'],['counter','Jibu adhabu, 7 au 8','Counter a penalty, 7 or 8'],['J','Lazimisha suit kwa J','Force a suit with a Jack'],['bulk','Cheza cards zinazofanana pamoja','Play identical cards together'],['win','Shinda mchezo','Win a game']];
+let learned={};try{learned=JSON.parse(localStorage.getItem('dlc_skills')||'{}')}catch(e){}
+const nSk=()=>SK.filter(s=>learned[s[0]]).length;
+const LES={'7':['7 inamfreeze mpinzani: anapoteza zamu na unacheza tena. Anaweza kujibu kwa 7 yake.','A 7 freezes the opponent: they lose their turn and you play again. They can answer with their own 7.'],
+'8':['8 inakupa nafasi ya kucheza tena. Mpinzani anaweza kuingilia kwa 8 yake.','An 8 lets you play again. The opponent can interrupt with their own 8.'],
+'2':['2 inamlazimisha mpinzani kuchukua 2. Anaweza kujibu kwa 2 au Joker na adhabu inajumlishwa.','A 2 makes the opponent pick 2. They may answer with a 2 or Joker and the penalty adds up.'],
+'JK':['Joker inamlazimisha mpinzani kuchukua 5. Inajibiwa na Joker tu.','A Joker makes the opponent pick 5. Only another Joker can answer it.'],
+'J':['J inachagua suit ambayo mpinzani lazima acheze. Inachezwa wakati wowote.','A Jack picks the suit the opponent must play. It can be played any time.']};
+const SL=[['Lengo','Goal','Kuwa wa kwanza kumaliza cards zako zote. Kila mchezaji anaanza na cards 4.','Be the first to empty your hand. Everyone starts with 4 cards.'],
+['Kucheza','Playing','Cheza card yenye suit au namba sawa na iliyo juu ya meza. J na Joker zinachezwa wakati wowote. Huna cha kucheza? Gusa deck uchukue card 1 (unaweza kuchukua hata ukiwa nayo).','Play a card with the same suit or number as the top card. J and Joker can be played any time. Nothing to play? Tap the deck to pick 1 (you may also pick by choice).'],
+['7 na 8','7 and 8','7 inamfreeze mpinzani na unacheza tena. 8 inakupa nafasi ya kucheza tena. Mpinzani akiwa na 7 au 8 anaweza kujibu kwa ileile.','A 7 freezes your opponent and you play again. An 8 gives you another turn. An opponent holding a 7 or 8 can answer with the same one.'],
+['2 na Joker','2 and Joker','2 = mpinzani achukue 2, Joker = achukue 5. Anaweza kujibu kwa 2 au Joker (Joker haijibiwi na 2) na adhabu inajumlishwa. Mwenye kushindwa anachukua zote, kisha aliyeshambulia anacheza tena.','2 = opponent picks 2, Joker = picks 5. They may answer with a 2 or Joker (a Joker cannot be answered by a 2) and penalties add up. Whoever fails picks them all, then the attacker plays again.'],
+['J na cards pamoja','Jack and bulk play','J inachagua suit ambayo mpinzani lazima acheze. Cards zinazofanana (si special) zinachezwa pamoja. Ukibaki na 2, 3 au 4 zinazofanana, bonyeza "N Last" ushinde mara moja.','A Jack picks the suit the opponent must play. Identical ordinary cards can be played together. With 2, 3 or 4 identical cards left, press "N Last" to win instantly.'],
+['Kushinda','Winning','Huwezi kushinda kwa special card (Joker, J, 2, 7, 8). Maliza kwa card ya kawaida. Ukibaki na card moja bonyeza Last card.','You cannot win with a special card (Joker, J, 2, 7, 8). Finish with an ordinary card. With one card left, press Last card.']];
+const coachSet=t=>{$('#ctext').textContent=t};
+function updSk(){$('#cskill').textContent=T('Ujuzi ','Skills ')+nSk()+'/'+SK.length}
+function applyCoach(){document.body.classList.toggle('learning',COACH);$('#coach').hidden=!COACH;updSk()}
+function learn(k){if(!COACH||learned[k])return;learned[k]=1;try{localStorage.setItem('dlc_skills',JSON.stringify(learned))}catch(e){}saveSkills();
+ const s=SK.find(x=>x[0]===k);coachSet('✓ '+T(s[1],s[2]));updSk();if(nSk()===SK.length)setTimeout(()=>$('#gd').showModal(),1500)}
+function skillHook(c,more,ctr){if(!COACH)return;if(more.length)learn('bulk');if(ctr)learn('counter');learn({'7':'7','8':'8','2':'2','JK':'2','J':'J'}[c.r]||'play')}
+function adviceText(){const t=topCard();
+ if(pend)return T('Bot amecheza '+pend.rank+'. Cheza '+pend.rank+' yako kujibu, au bonyeza kitufe kukubali.','Bot played a '+pend.rank+'. Answer with your '+pend.rank+', or tap the button to accept.');
+ if(pen>0)return T('Kuna adhabu ya cards '+pen+'. Jibu kwa '+(penKind==='JK'?'Joker tu':'2 au Joker')+', au chukua.','There is a penalty of '+pen+' cards. Answer with '+(penKind==='JK'?'a Joker only':'a 2 or Joker')+', or pick them.');
+ if(free)return T('Cheza card yoyote unayotaka.','Play any card you like.');
+ if(force)return T('Lazima ucheze '+SU[force]+' (au J / Joker).','You must play '+SU[force]+' (or J / Joker).');
+ if(!H.p.some(canPlay))return T('Huna card ya kucheza. Gusa deck uchukue card 1.','You have no playable card. Tap the deck to pick 1.');
+ return T('Juu ni '+lab(t)+'. Cheza '+SU[t.s]+' au '+t.r+'. Cards zinazong\u2019aa zinaruhusiwa. Unahitaji msaada? Bonyeza Hint.','Top card is '+lab(t)+'. Play a '+SU[t.s]+' or a '+t.r+'. Glowing cards are allowed. Need help? Tap Hint.')}
+function coachRefresh(){if(!COACH)return;const L=lastLesson;lastLesson=null;coachSet((L?T(L[0],L[1])+' ':'')+adviceText())}
+function hintScore(c){const h=H.p;let s=0;if(c.r==='7'||c.r==='8')s+=3;if(c.r==='2')s+=2.5;if(c.r==='JK')s+=pen>0?2:.5;if(c.r==='J')s-=2;
+ s+=h.filter(x=>x!==c&&x.r===c.r).length*1.2+h.filter(x=>x!==c&&x.s===c.s).length*.4;
+ const rem=h.filter(x=>x!==c);if(rem.length&&rem.every(x=>SPEC.includes(x.r)))s-=5;return s}
+function giveHint(){if(turn!=='p'||lock||over)return coachSet(T('Subiri zamu yako.','Wait for your turn.'));
+ if(pend)return coachSet(adviceText());
+ const pl=H.p.filter(canPlay);
+ if(!pl.length){hintId=null;return coachSet(adviceText())}
+ const best=pl.slice().sort((a,b)=>hintScore(b)-hintScore(a))[0];hintId=best.id;renderHand();
+ const why=best.r==='7'?T('inamfreeze Bot na unacheza tena','it freezes Bot and you play again'):best.r==='8'?T('unacheza tena','you play again'):(best.r==='2'||best.r==='JK')?T('inamlazimisha Bot kuchukua cards','it forces Bot to pick cards'):best.r==='J'?T('unachagua suit atakayocheza Bot','you choose the suit Bot must play'):T('inaendana na meza na inakuachia cards za kucheza baadaye','it matches the pile and keeps good cards for later');
+ coachSet(T('Jaribu ','Try ')+lab(best)+': '+why+'.')}
+function explainNo(c){const t=topCard();let m;
+ if(H.p.length===1&&SPEC.includes(c.r))m=T('Special card haiwezi kumaliza mchezo. Chukua card kwanza.','A special card cannot finish the game. Pick a card first.');
+ else if(pend)m=T('Sasa unaweza kujibu kwa '+pend.rank+' tu, au ukubali.','You can only answer with a '+pend.rank+' now, or accept.');
+ else if(pen>0)m=T('Kuna adhabu: jibu kwa '+(penKind==='JK'?'Joker tu':'2 au Joker')+', au chukua cards.','There is a penalty: answer with '+(penKind==='JK'?'a Joker only':'a 2 or Joker')+', or pick the cards.');
+ else if(force)m=T('Lazima ucheze '+SU[force]+' (au J / Joker).','Play a '+SU[force]+' (or J / Joker).');
+ else m=T(lab(c)+' haiendani na '+lab(t)+'. Unahitaji '+SU[t.s]+' au '+t.r+' (au J / Joker).',lab(c)+' does not match '+lab(t)+'. You need '+SU[t.s]+' or '+t.r+' (or J / Joker).');
+ coachSet(m)}
+function intro(again){if(introSeen&&!again)return;introSeen=true;let i=0;const d=$('#cd');
+ const show=()=>{$('#ct').textContent=T(SL[i][0],SL[i][1]);$('#cb').textContent=T(SL[i][2],SL[i][3]);$('#cn').textContent=i<SL.length-1?T('Endelea','Next'):T('Anza kucheza','Start')};
+ $('#cn').onclick=()=>{if(i<SL.length-1){i++;show()}else d.close()};
+ $('#cl').onclick=()=>{LANG=LANG==='sw'?'en':'sw';$('#clang').textContent=LANG.toUpperCase();updSk();show()};
+ show();if(!d.open)d.showModal()}
+$('#chint').onclick=giveHint;$('#cguide').onclick=()=>intro(true);
+$('#clang').onclick=()=>{LANG=LANG==='sw'?'en':'sw';$('#clang').textContent=LANG.toUpperCase();updSk();coachRefresh()};
+$('#cskill').onclick=()=>{$('#kl').innerHTML=SK.map(s=>'<p style="margin:6px 0;text-align:left;color:var(--ink)">'+(learned[s[0]]?'✓ ':'○ ')+T(s[1],s[2])+'</p>').join('');$('#kd').showModal()};
+
+/* Quick match is AI only. The online hooks used by the engine are inactive here (friend matches live in Pvp.html). */
+const goHome=()=>{location.href='Home.html'};
+const Net={match:null,oppName:'Bot',rx:{A:[],B:[]}};
+let oppAdd=0,addT,curV=0,winnerLocal=null,gameT0=Date.now();
+const sync=()=>{},showJudge=()=>{},chatSend=()=>{},rematch=()=>{},renderRx=()=>{};
+async function quitMatch(){goHome()}
+
+/* Save the result of a finished game against the AI (the database decides the XP). */
+function recordAi(w){
+ if(!window.DLC||!DLC.sb)return;
+ DLC.sb.rpc('record_ai_result',{p_bot:B.id,p_won:w==='p',p_cards_left:H.p,p_seconds:Math.round((Date.now()-gameT0)/1000)})
+  .then(r=>{if(r.error||r.data==null)return;$('#ep').textContent+=' '+(r.data>0?'+'+r.data+' XP':'(daily AI XP limit reached)')})
+  .catch(()=>{})}
+
+/* Signed-in player: show their nickname and picture, and keep Learn-to-play skills in the database. */
+let UID=null;
+function saveSkills(){if(!UID)return;const all=nSk()===SK.length;
+ DLC.sb.from('learn_progress').update(all?{skills:learned,graduated_at:new Date().toISOString()}:{skills:learned}).eq('user_id',UID).then(()=>{},()=>{})}
+DLC.session().then(async s=>{if(!s)return;UID=s.user.id;
+ const [pr,lp]=await Promise.all([DLC.sb.from('profiles').select('nickname,avatar_url').eq('id',UID).single(),DLC.sb.from('learn_progress').select('skills').eq('user_id',UID).single()]);
+ if(pr.data){$('#pname').textContent=pr.data.nickname;const av=$('#pav');av.firstChild.textContent=(pr.data.nickname[0]||'Y').toUpperCase();
+  if(pr.data.avatar_url){const im=new Image();im.alt='';im.style.cssText='position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover';im.src=pr.data.avatar_url;av.firstChild.textContent='';av.insertBefore(im,av.firstElementChild)}}
+ if(lp.data&&lp.data.skills){Object.assign(learned,lp.data.skills);try{localStorage.setItem('dlc_skills',JSON.stringify(learned))}catch(e){}updSk()}
+}).catch(()=>{});
+
+/*BOOT*/
+const hm=(location.hash||'').match(/^#learn-?([a-z]*)/),hn=(location.hash||'').match(/^#(invite|invitations|match-(\w+))/),hp=(location.hash||'').match(/^#play-(\w+)/);
+if(hp&&BOTS.some(x=>x.id===hp[1])){setBot(BOTS.find(x=>x.id===hp[1]));newGame()}else if(hm){COACH=true;applyCoach();const b=BOTS.find(x=>x.id===hm[1]);if(b){setBot(b);newGame()}else pickBot(true)}else pickBot(true);
+</script>
+</body>
+</html>
