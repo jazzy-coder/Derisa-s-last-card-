@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Derisa’s Last Card — Home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07050d;--ink:#f6efe0;--mute:#a79fb3;--gold:#e8b84f;--gold2:#ffe29a;--ruby:#c0243a;--cyan:#38e8ff;--glass:rgba(20,14,34,.62);--line:rgba(232,184,79,.28);--ok:#5cf2a0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="light"]{--bg:#efe6d2;--ink:#241a10;--mute:#6b5d4a;--glass:rgba(255,250,238,.72);--line:rgba(140,96,20,.4);--gold:#a9711f;--gold2:#7a4d0d;--cyan:#0b7f93}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:500 18px Rajdhani,system-ui,sans-serif;overflow-x:hidden}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.aura{position:fixed;inset:-20%;z-index:0;background:radial-gradient(40% 35% at 15% 15%,rgba(192,36,58,.3),transparent 70%),radial-gradient(45% 40% at 90% 85%,rgba(56,232,255,.16),transparent 70%),radial-gradient(50% 45% at 50% 55%,rgba(232,184,79,.1),transparent 70%)}
+main{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:16px 18px 40px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.wx{display:flex;gap:6px;padding:5px;border-radius:14px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.wx button,.chip{width:40px;height:40px;border:0;border-radius:10px;background:transparent;cursor:pointer;color:var(--mute);display:grid;place-items:center;transition:.2s}
+.wx button[aria-pressed="true"]{background:linear-gradient(100deg,var(--gold2),var(--gold));color:#1a1000;box-shadow:0 0 16px rgba(232,184,79,.45)}
+.wx svg,.chip svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chip{width:auto;padding:0 14px;gap:8px;grid-auto-flow:column;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:700 16px Rajdhani,sans-serif}
+.hello{margin:18px 0 0;padding:14px 20px;border-radius:999px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-family:"Cinzel Decorative",serif;font-weight:700;font-size:clamp(17px,4.4vw,24px);background-image:linear-gradient(90deg,rgba(232,184,79,.16),transparent);overflow-wrap:anywhere}
+.profile{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;margin-top:22px}
+.fields{display:grid;gap:14px}
+.pill{display:block;padding:10px 18px 11px;border-radius:16px;background:var(--glass);border:1px solid var(--line);min-width:0}
+.pill small{display:block;color:var(--mute);font-size:14px;font-weight:600}
+.pill input,.pill output{display:block;width:100%;border:0;outline:0;background:transparent;color:var(--ink);font:700 22px Rajdhani,sans-serif;padding:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill:focus-within{border-color:var(--cyan);box-shadow:0 0 20px rgba(56,232,255,.25)}
+.who{display:grid;justify-items:center;gap:10px}
+.av{position:relative;width:132px;height:132px}
+.ring{position:absolute;inset:0;border-radius:50%;padding:3px;background:conic-gradient(from var(--a,0deg),var(--gold2),var(--cyan),var(--ruby),var(--gold2));animation:spin 8s linear infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+@property --a{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes spin{to{--a:360deg}}
+.pic{position:absolute;inset:7px;border-radius:50%;overflow:hidden;background:rgba(232,184,79,.1);display:grid;place-items:center;font-size:48px;color:var(--gold)}
+.pic img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.edit{position:absolute;left:2px;bottom:6px;width:38px;height:38px;border-radius:50%;border:2px solid var(--bg);background:var(--gold);color:#1a1000;cursor:pointer;display:grid;place-items:center}
+.edit svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lvl{width:100%;min-width:132px;padding:7px 14px;border-radius:12px;background:var(--glass);border:1px solid var(--line);text-align:center;font-weight:700}
+.xp{height:5px;border-radius:5px;background:rgba(255,255,255,.12);margin-top:5px;overflow:hidden}
+.xp i{display:block;height:100%;width:8%;background:linear-gradient(90deg,var(--gold),var(--cyan))}
+hr{border:0;height:1px;margin:26px 0;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.menu{display:grid;gap:16px}
+.mb{position:relative;display:flex;align-items:center;gap:16px;width:100%;min-height:68px;padding:0 22px;border-radius:999px;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:700 21px Rajdhani,sans-serif;letter-spacing:.05em;cursor:pointer;overflow:hidden;transition:transform .2s,box-shadow .25s,border-color .25s;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.mb::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,226,154,.22),transparent 70%);transform:translateX(-110%);transition:transform .6s}
+.mb:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 10px 34px rgba(232,184,79,.28)}
+.mb:hover::before{transform:translateX(110%)}
+.mb .ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(232,184,79,.14);color:var(--gold2);font-size:20px;flex:none}
+.mb span.t{flex:1;text-align:center;margin-right:40px}
+.mb.main{min-height:78px;background:linear-gradient(100deg,var(--gold2),var(--gold),#ffd36b);color:#1a1000;border:0;box-shadow:0 10px 34px rgba(232,184,79,.4)}
+.mb.main .ic{background:rgba(26,16,0,.14);color:#1a1000}
+.badge{position:absolute;right:20px;min-width:26px;height:26px;border-radius:13px;background:var(--ruby);color:#fff;font-size:15px;display:none;place-items:center;padding:0 7px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+dialog{border:1px solid var(--gold);border-radius:24px;background:var(--bg);color:var(--ink);width:min(440px,calc(100% - 28px));padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.7)}
+dialog::backdrop{background:rgba(5,3,10,.7);backdrop-filter:blur(5px)}
+dialog h2{margin:0 0 12px;font:900 22px "Cinzel Decorative",serif;color:var(--gold2)}
+dialog p{color:var(--mute);margin:0 0 14px}
+.row{display:flex;gap:10px;margin-top:12px}
+.btn{height:46px;padding:0 18px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink);font:700 17px Rajdhani,sans-serif;cursor:pointer;flex:1}
+.btn.go{background:linear-gradient(100deg,var(--gold2),var(--gold));color:#1a1000;border:0}
+.field{width:100%;height:48px;border-radius:12px;border:1px solid var(--line);background:rgba(8,5,16,.6);color:var(--ink);padding:0 14px;font:600 18px Rajdhani,sans-serif;outline:0}
+.srch{display:grid;place-items:center;height:130px}
+.srch i{width:70px;height:70px;border-radius:50%;border:3px solid transparent;border-top-color:var(--gold);border-right-color:var(--cyan);animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+.set{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.sw{width:54px;height:30px;border-radius:15px;border:0;background:#4a4458;position:relative;cursor:pointer}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.25s}
+.sw[aria-checked="true"]{background:var(--ok)}.sw[aria-checked="true"]::after{transform:translateX(24px)}
+.ob{display:grid;justify-items:center;gap:3px;padding:10px 4px;border-radius:16px;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:700 15px Rajdhani,sans-serif;cursor:pointer;text-decoration:none}
+.ob img{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--line)}
+.ob small{color:var(--gold2);font-size:13px}
+.ob:hover{border-color:var(--gold);box-shadow:0 0 18px rgba(232,184,79,.35)}
+.mb.learn .ic{background:rgba(56,232,255,.16);color:var(--cyan)}
+#toast{position:fixed;z-index:99;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,160%);background:#150f24;color:var(--ink);border:1px solid var(--gold);padding:12px 20px;border-radius:12px;transition:transform .4s cubic-bezier(.2,1.2,.4,1);max-width:92vw;text-align:center}
+#toast.show{transform:translate(-50%,0)}
+.empty{text-align:center;padding:26px 8px;border:1px dashed var(--line);border-radius:16px}
+@media(max-width:420px){.profile{grid-template-columns:1fr 124px;gap:12px}.av{width:112px;height:112px}.pill input,.pill output{font-size:19px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#07050d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Last Card">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>html{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}input,textarea{-webkit-user-select:text;user-select:text}</style>
+</head>
+<body>
+<div class="aura"></div><canvas id="fx" aria-hidden="true"></canvas>
+<main>
+  <div class="bar">
+    <div class="wx" role="group" aria-label="Table weather">
+      <button data-w="sun" aria-label="Sunny" aria-pressed="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button>
+      <button data-w="part" aria-label="Partly cloudy" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><path d="M8 2v1M2 8h1M3.8 3.8l.7.7M12.2 3.8l-.7.7M8 18h9a3.5 3.5 0 000-7 5 5 0 00-9.6 1.5A2.8 2.8 0 008 18z"/></svg></button>
+      <button data-w="cloud" aria-label="Cloudy" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M6.5 19h11a4 4 0 000-8 6 6 0 00-11.5 1.5A3.4 3.4 0 006.5 19z"/></svg></button>
+      <button data-w="rain" aria-label="Rain" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0118 0zM12 12v7a2 2 0 004 0"/></svg></button>
+      <button data-w="snow" aria-label="Snow" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7M9 4l3 2 3-2M9 20l3-2 3 2"/></svg></button>
+    </div>
+    <button class="chip" id="theme" type="button" aria-label="Switch theme"><svg viewBox="0 0 24 24"><path d="M21 13A9 9 0 1111 3a7 7 0 0010 10z"/></svg><span id="themeT">Dark</span></button>
+  </div>
+
+  <p class="hello" id="hello">Hello</p>
+
+  <section class="profile" aria-label="Your profile">
+    <div class="fields">
+      <label class="pill"><small>Nickname</small><input id="nick" maxlength="20" autocomplete="nickname" placeholder="Pick a nickname"></label>
+      <div class="pill"><small id="idLabel">Email / guest code</small><output id="idVal">—</output></div>
+    </div>
+    <div class="who">
+      <div class="av">
+        <div class="ring"></div>
+        <div class="pic" id="pic">♠</div>
+        <button class="edit" id="edit" type="button" aria-label="Change profile picture"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+        <input type="file" id="file" accept="image/*" hidden>
+      </div>
+      <div class="lvl">Level 1<div class="xp"><i></i></div></div>
+    </div>
+  </section>
+
+  <hr>
+
+  <nav class="menu" aria-label="Main menu">
+    <button class="mb main" data-open="quick" type="button"><span class="ic">♠</span><span class="t">Quick match</span></button>
+    <button class="mb learn" data-open="learn" type="button"><span class="ic">★</span><span class="t">Learn to play</span></button>
+    <button class="mb" data-open="invite" type="button"><span class="ic">♥</span><span class="t">Invite player</span></button>
+    <button class="mb" data-open="inbox" type="button"><span class="ic">♦</span><span class="t">My invitations</span><b class="badge" id="badge">0</b></button>
+    <button class="mb" data-open="settings" type="button"><span class="ic">♣</span><span class="t">Settings</span></button>
+  </nav>
+</main>
+<div id="toast" role="status"></div>
+
+<dialog id="dlg"><div id="dbody"></div><div class="row"><button class="btn" id="close" type="button">Close</button></div></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script>
+const $=s=>document.querySelector(s),dlg=$('#dlg'),body=$('#dbody');
+const GAME_URL='Game.html',PVP_URL='Pvp.html',TGT='_self';
+const BOT=[{id:'easy',name:'Pinky',lv:'Easy',img:DLC.ASSET_BASE+'bots/easy.jpg'},{id:'medium',name:'Bruno',lv:'Medium',img:DLC.ASSET_BASE+'bots/medium.jpg'},{id:'hard',name:'Rio',lv:'Hard',img:DLC.ASSET_BASE+'bots/hard.jpg'},{id:'expert',name:'Zuri',lv:'Expert',img:DLC.ASSET_BASE+'bots/expert.jpg'},{id:'master',name:'Shaun',lv:'Master',img:DLC.ASSET_BASE+'bots/master.jpg'},{id:'gm',name:'Fenrir',lv:'Grand Master',img:DLC.ASSET_BASE+'bots/gm.jpg'}];
+// ---- player data from Supabase ----
+let P={id:null,email:'',guest:false},profile=null;
+const SETD={sound:true,flip_animation:true,theme:'dark',language:'sw'};let SET={...SETD};
+const toast=m=>{const e=$('#toast');e.textContent=m;e.classList.add('show');clearTimeout(e._h);e._h=setTimeout(()=>e.classList.remove('show'),2600)};
+function greet(){const h=new Date().getHours(),g=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
+ $('#hello').textContent=g+', '+($('#nick').value.trim()||'player')}
+function setAvatar(url){$('#pic').innerHTML=url?'<img alt="Your profile picture" src="'+url+'">':'♠'}
+function showLevel(xp){const L=DLC.levelInfo(xp);
+ $('.lvl').innerHTML='Level '+L.level+'<div class="xp"><i style="width:'+Math.max(L.pct,4)+'%"></i></div><small style="display:block;margin-top:4px;color:var(--mute);font-size:12px">'+xp+' XP · '+L.toNext+' to next level</small>'}
+function applySettings(s){SET={...SETD,...s};document.documentElement.dataset.theme=SET.theme==='light'?'light':'dark';$('#themeT').textContent=SET.theme==='light'?'Light':'Dark'}
+function installRow(){
+ if(DLC.isStandalone&&DLC.isStandalone())return '';
+ if(DLC.canInstall&&DLC.canInstall())return '<div class="set"><span>Install app</span><button class="btn" id="inst" type="button" style="flex:0 0 100px">Install</button></div>';
+ if(DLC.isIOS&&DLC.isIOS())return '<div class="set"><span>Install: tap Share, then “Add to Home Screen”</span></div>';
+ return '<div class="set"><span>Install: open the browser menu, then “Install app”</span></div>'}
+async function saveSettings(){if(!P.id)return;const r=await DLC.sb.from('profiles').update({settings:SET}).eq('id',P.id);if(r.error)toast('Could not save the settings.')}
+async function refreshBadge(){if(!P.id)return;
+ const r=await DLC.sb.from('invites').select('id',{count:'exact',head:true}).eq('to_user',P.id).eq('status','pending').gt('expires_at',new Date().toISOString());
+ const n=r.count||0,bd=$('#badge');bd.textContent=n;bd.style.display=n?'grid':'none'}
+$('#nick').oninput=greet;
+$('#nick').onchange=async()=>{if(!profile)return;const v=$('#nick').value.trim();
+ if(v.length<2||v.length>20){toast('Nickname must be 2 to 20 characters.');$('#nick').value=profile.nickname;greet();return}
+ if(v===profile.nickname)return;
+ const r=await DLC.sb.from('profiles').update({nickname:v}).eq('id',P.id);
+ if(r.error){toast('Could not save the nickname.');$('#nick').value=profile.nickname}else{profile.nickname=v;toast('Nickname saved.')}
+ greet()};
+// profile picture: crop to a square, shrink to 256px, upload to the "avatars" bucket
+$('#edit').onclick=()=>$('#file').click();
+function toJpeg(file,size){return new Promise((ok,no)=>{const img=new Image(),u=URL.createObjectURL(file);
+ img.onload=()=>{const c=document.createElement('canvas');c.width=c.height=size;const x=c.getContext('2d'),m=Math.min(img.width,img.height);
+  x.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,size,size);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):no(new Error('encode failed')),'image/jpeg',.85)};
+ img.onerror=()=>no(new Error('bad image'));img.src=u})}
+$('#file').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f||!P.id)return;
+ try{toast('Uploading…');const blob=await toJpeg(f,256),path=P.id+'/avatar.jpg';
+  const up=await DLC.sb.storage.from('avatars').upload(path,blob,{upsert:true,contentType:'image/jpeg',cacheControl:'3600'});if(up.error)throw up.error;
+  const url=DLC.sb.storage.from('avatars').getPublicUrl(path).data.publicUrl+'?t='+Date.now();
+  const r=await DLC.sb.from('profiles').update({avatar_url:url}).eq('id',P.id);if(r.error)throw r.error;
+  profile.avatar_url=url;setAvatar(url);toast('Picture updated.')}
+ catch(x){toast('Could not upload the picture.')}};
+// load everything for the signed-in player
+(async()=>{
+ const s=await DLC.requireAuth();if(!s)return;
+ P.id=s.user.id;P.email=s.user.email||'';
+ const [pr,st]=await Promise.all([
+  DLC.sb.from('profiles').select('nickname,avatar_url,friend_code,is_guest,settings').eq('id',P.id).single(),
+  DLC.sb.from('player_stats').select('xp,level').eq('user_id',P.id).single()]);
+ if(pr.error||!pr.data){toast('Could not load your profile.');return}
+ profile=pr.data;P.guest=!!profile.is_guest;
+ $('#nick').value=profile.nickname;greet();
+ $('#idLabel').textContent=P.guest?'Guest code':'Email';
+ $('#idVal').textContent=P.guest?profile.friend_code:(P.email||'—');
+ setAvatar(profile.avatar_url);showLevel(st.data?st.data.xp:0);applySettings(profile.settings||{});
+ refreshBadge();
+ try{DLC.sb.channel('home-invites').on('postgres_changes',{event:'*',schema:'public',table:'invites',filter:'to_user=eq.'+P.id},refreshBadge).subscribe()}catch(e){console.error('realtime',e)}
+})();
+// theme
+$('#theme').onclick=()=>{const l=document.documentElement.dataset.theme!=='light';SET.theme=l?'light':'dark';applySettings(SET);saveSettings()};
+// weather ambience
+let wx='sun',W,H,items=[];const cv=$('#fx'),cx=cv.getContext('2d');
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight;seed()}
+function seed(){const n=wx==='rain'?110:wx==='snow'?80:wx==='sun'?0:14;
+ items=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,s:Math.random(),d:Math.random()*6}))}
+document.querySelectorAll('.wx button').forEach(b=>b.onclick=()=>{wx=b.dataset.w;
+ document.querySelectorAll('.wx button').forEach(x=>x.setAttribute('aria-pressed',x===b));seed()});
+let t=0;function loop(){t+=.01;cx.clearRect(0,0,W,H);
+ if(wx==='sun'||wx==='part'){const g=cx.createRadialGradient(W*.82,0,0,W*.82,0,W*.7);g.addColorStop(0,'rgba(255,214,110,'+(.28+Math.sin(t)*.05)+')');g.addColorStop(1,'transparent');cx.fillStyle=g;cx.fillRect(0,0,W,H)}
+ for(const i of items){
+  if(wx==='rain'){i.y+=10+i.s*8;i.x-=2;if(i.y>H){i.y=-20;i.x=Math.random()*W}cx.strokeStyle='rgba(120,200,255,.4)';cx.beginPath();cx.moveTo(i.x,i.y);cx.lineTo(i.x-2,i.y+14);cx.stroke()}
+  else if(wx==='snow'){i.y+=.8+i.s*1.4;i.x+=Math.sin(t*3+i.d)*.6;if(i.y>H){i.y=-10;i.x=Math.random()*W}cx.fillStyle='rgba(255,255,255,.7)';cx.beginPath();cx.arc(i.x,i.y,1.5+i.s*2.5,0,7);cx.fill()}
+  else{i.x+=.15+i.s*.3;if(i.x>W+160)i.x=-160;cx.fillStyle='rgba(170,160,200,'+(wx==='cloud'?.12:.07)+')';cx.beginPath();cx.ellipse(i.x,60+i.s*H*.5,90+i.s*60,26+i.s*16,0,0,7);cx.fill()}}
+ if(!matchMedia('(prefers-reduced-motion:reduce)').matches)requestAnimationFrame(loop)}
+size();addEventListener('resize',size);loop();
+// panels
+let timer;const inv=[];
+const V={
+ learn:()=>{body.innerHTML='<h2>Learn to play</h2><p>New to Last Card? Pick an opponent. A coach explains every move in Swahili or English, gives hints, and tracks your skills until you know the game.</p><div id="lg" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>';
+  const g=$('#lg');BOT.forEach(b=>{const a=document.createElement('a');a.className='ob';a.href=GAME_URL+'#learn-'+b.id;a.target=TGT;a.rel='noopener';a.innerHTML='<img alt="" src="'+b.img+'"><b>'+b.name+'</b><small>'+b.lv+'</small>';g.appendChild(a)})},
+ quick:()=>{body.innerHTML='<h2>Quick match</h2><p>Play against an AI. Pick your opponent and the game starts right away.</p><div id="qg" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>';
+  const g=$('#qg');BOT.forEach(b=>{const a=document.createElement('a');a.className='ob';a.href=GAME_URL+'#play-'+b.id;a.target=TGT;a.rel='noopener';a.innerHTML='<img alt="" src="'+b.img+'"><b>'+b.name+'</b><small>'+b.lv+'</small>';g.appendChild(a)})},
+ invite:()=>{body.innerHTML='<h2>Invite player</h2><p>Play a friend online with the same rules. Share your code or enter your friend’s code to send an invitation.</p><a class="btn go" style="display:grid;text-decoration:none" href="'+PVP_URL+'#invite" target="'+TGT+'" rel="noopener">Open invite screen</a>'},
+ inbox:()=>{body.innerHTML='<h2>My invitations</h2><p>Invitations from friends wait on the invitations screen. Accept one to start the match.</p><a class="btn go" style="display:grid;text-decoration:none" href="'+PVP_URL+'#invitations" target="'+TGT+'" rel="noopener">Open invitations</a>'},
+ settings:()=>{body.innerHTML='<h2>Settings</h2><div class="set"><span>Sound effects</span><button class="sw" data-k="sound" role="switch" aria-checked="'+!!SET.sound+'" aria-label="Sound effects"></button></div><div class="set"><span>Card flip animation</span><button class="sw" data-k="flip_animation" role="switch" aria-checked="'+!!SET.flip_animation+'" aria-label="Card flip animation"></button></div>'+installRow()+'<div class="set"><span>Theme</span><button class="btn" id="th2" type="button" style="flex:0 0 100px">Switch</button></div><div class="row"><button class="btn" id="out" type="button">Log out</button></div>';
+  body.querySelectorAll('.sw').forEach(s=>s.onclick=()=>{const on=s.getAttribute('aria-checked')!=='true';s.setAttribute('aria-checked',on);SET[s.dataset.k]=on;saveSettings()});
+  $('#th2').onclick=()=>$('#theme').click();
+  if($('#inst'))$('#inst').onclick=async()=>{const ok=await DLC.install();toast(ok?'App installed.':'Install cancelled.')};
+  $('#out').onclick=()=>DLC.signOut()}};
+document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{V[b.dataset.open]();dlg.showModal()});
+$('#close').onclick=()=>dlg.close();dlg.onclose=()=>clearTimeout(timer);
+dlg.onclick=e=>{if(e.target===dlg)dlg.close()};
+</script>
+</body>
+</html>
